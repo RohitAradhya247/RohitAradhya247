@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rohit | AI you can check</title>
+<meta name="description" content="Rohit Rajashekar Aradhya, MS in Artificial Intelligence at Northeastern University. I build AI systems that know when to trust their own answers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F7FB; --surface:#FFFFFF; --ink:#152033; --muted:#5B6478; --line:#E2E5EE;
+  --teal:#0D9488; --teal-soft:#D5F5EF; --indigo:#4F46E5; --indigo-soft:#E4E3FD;
+  --amber:#D97706; --amber-soft:#FDEFD3; --rose:#E11D48; --rose-soft:#FDE1E7; --sky:#0284C7; --sky-soft:#DBEFFB;
+  --pass:var(--teal); --pass-soft:var(--teal-soft); --unsure:var(--amber); --unsure-soft:var(--amber-soft); --fail:var(--rose);
+  --panel:#152033; --panel-ink:#EEF1F8; --panel-muted:#9AA6BF;
+  --display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --text:"Literata",Georgia,"Times New Roman",serif;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1220; --surface:#151C2E; --ink:#ECEFF7; --muted:#9AA4BC; --line:#252E45;
+    --teal:#2DD4BF; --teal-soft:#123A3A; --indigo:#8B85FF; --indigo-soft:#232150;
+    --amber:#FBBF24; --amber-soft:#3A2C10; --rose:#FB7185; --rose-soft:#3D1724; --sky:#38BDF8; --sky-soft:#0F2E42;
+    --panel:#0A0F1B; --panel-ink:#ECEFF7; --panel-muted:#8E9AB4; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1220; --surface:#151C2E; --ink:#ECEFF7; --muted:#9AA4BC; --line:#252E45;
+  --teal:#2DD4BF; --teal-soft:#123A3A; --indigo:#8B85FF; --indigo-soft:#232150;
+  --amber:#FBBF24; --amber-soft:#3A2C10; --rose:#FB7185; --rose-soft:#3D1724; --sky:#38BDF8; --sky-soft:#0F2E42;
+  --panel:#0A0F1B; --panel-ink:#ECEFF7; --panel-muted:#8E9AB4; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 72px);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--text);font-size:1.0625rem;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration-color:var(--teal);text-decoration-thickness:2px;text-underline-offset:3px}
+a:hover{color:var(--teal)}
+:focus-visible{outline:3px solid var(--indigo);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1140px;margin:0 auto;padding:0 clamp(20px,4vw,40px);position:relative}
+h1,h2,h3{font-family:var(--display);line-height:1.08;margin:0;letter-spacing:-0.01em}
+
+/* progress bar */
+.progress{position:fixed;top:env(safe-area-inset-top,0px);left:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--teal),var(--indigo),var(--rose),var(--amber));z-index:11}
+
+/* header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:62px}
+.brand{font-family:var(--display);font-weight:800;font-size:1.15rem;text-decoration:none;display:flex;align-items:center;gap:10px}
+.brand i{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--indigo));display:grid;place-items:center;color:#fff;font-style:normal;font-size:.85rem}
+nav.links{display:flex;gap:clamp(10px,2vw,22px);font-family:var(--display);font-size:.95rem}
+nav.links a{text-decoration:none;color:var(--muted);padding:6px 10px;border-radius:999px;transition:background .2s,color .2s}
+nav.links a:hover{color:var(--ink);background:var(--indigo-soft)}
+nav.links a.active{color:var(--indigo);background:var(--indigo-soft)}
+.top-actions{display:flex;gap:10px;align-items:center}
+.theme-btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;width:38px;height:38px;cursor:pointer;font-size:1rem;flex:none;transition:transform .4s}
+.theme-btn:hover{transform:rotate(180deg)}
+.menu-btn{display:none}
+@media (max-width:800px){
+  nav.links{position:fixed;inset:calc(env(safe-area-inset-top,0px) + 62px) 0 auto 0;flex-direction:column;gap:2px;background:var(--bg);border-bottom:1px solid var(--line);padding:10px clamp(20px,4vw,40px) 18px;display:none}
+  nav.links.open{display:flex}
+  nav.links a{padding:10px 12px;font-size:1.1rem;color:var(--ink)}
+  .menu-btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;height:38px;padding:0 16px;font-family:var(--display);cursor:pointer}
+}
+
+/* hero with animated colour field */
+.hero{position:relative;padding:clamp(56px,9vw,120px) 0 clamp(48px,6vw,80px);overflow:hidden;isolation:isolate}
+.blobs{position:absolute;inset:-10% -5%;z-index:-1;filter:blur(70px);opacity:.55}
+.blob{position:absolute;border-radius:50%;mix-blend-mode:multiply}
+:root[data-theme="dark"] .blob{mix-blend-mode:screen}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .blob{mix-blend-mode:screen}}
+.b1{width:46vw;height:46vw;max-width:620px;max-height:620px;background:var(--teal);left:-8%;top:-20%;animation:drift1 18s ease-in-out infinite alternate}
+.b2{width:40vw;height:40vw;max-width:540px;max-height:540px;background:var(--indigo);right:-6%;top:-10%;animation:drift2 22s ease-in-out infinite alternate}
+.b3{width:34vw;height:34vw;max-width:460px;max-height:460px;background:var(--rose);left:30%;bottom:-30%;animation:drift3 20s ease-in-out infinite alternate;opacity:.7}
+.b4{width:26vw;height:26vw;max-width:340px;max-height:340px;background:var(--amber);right:20%;bottom:-10%;animation:drift1 16s ease-in-out infinite alternate-reverse;opacity:.6}
+@keyframes drift1{to{transform:translate(12%,18%) scale(1.15)}}
+@keyframes drift2{to{transform:translate(-16%,14%) scale(.9)}}
+@keyframes drift3{to{transform:translate(10%,-22%) scale(1.2)}}
+.grid-bg{position:absolute;inset:0;z-index:-1;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse at 50% 30%,#000 20%,transparent 70%);-webkit-mask-image:radial-gradient(ellipse at 50% 30%,#000 20%,transparent 70%);opacity:.6}
+.hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(28px,5vw,64px);align-items:center}
+@media (max-width:920px){.hero .wrap{grid-template-columns:1fr}}
+.hello{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;font-size:.95rem;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px 6px 8px;box-shadow:0 6px 20px -12px rgba(30,40,90,.4)}
+.hello .dot{width:10px;height:10px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 0 var(--teal);animation:ping 2s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--teal) 60%,transparent)}100%{box-shadow:0 0 0 12px transparent}}
+.hero h1{font-size:clamp(2.8rem,7.4vw,5.8rem);font-weight:800;letter-spacing:-0.035em;margin-top:22px;background:linear-gradient(100deg,var(--ink) 0%,var(--ink) 35%,var(--indigo) 60%,var(--teal) 85%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sheen 8s ease-in-out infinite alternate}
+@keyframes sheen{to{background-position:100% 0}}
+.hero .lede{font-family:var(--display);font-weight:600;font-size:clamp(1.25rem,2.2vw,1.65rem);margin:22px 0 0;line-height:1.3;max-width:30ch}
+.rotator{display:inline-block;color:var(--indigo);border-bottom:3px solid var(--amber);white-space:nowrap}
+.caret{display:inline-block;width:2px;height:1em;background:var(--indigo);margin-left:2px;vertical-align:-0.12em;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.hero .sub{color:var(--muted);max-width:52ch;margin:16px 0 0}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.btn{font-family:var(--display);font-weight:600;font-size:1rem;text-decoration:none;padding:13px 22px;border-radius:12px;border:1.5px solid var(--line);color:var(--ink);background:var(--surface);transition:transform .2s,box-shadow .2s,border-color .2s;display:inline-block}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 24px -14px rgba(40,40,120,.5);border-color:var(--indigo);color:var(--ink)}
+.btn.primary{background:linear-gradient(135deg,var(--indigo),var(--teal));color:#fff;border-color:transparent;background-size:150% 150%;transition:background-position .4s,transform .2s,box-shadow .2s}
+.btn.primary:hover{background-position:100% 0;color:#fff}
+
+/* verifier */
+.verifier{background:var(--panel);color:var(--panel-ink);border:1px solid color-mix(in srgb,var(--indigo) 40%,transparent);border-radius:20px;padding:22px 22px 18px;font-family:var(--display);box-shadow:0 40px 80px -40px color-mix(in srgb,var(--indigo) 70%,transparent),0 0 0 6px color-mix(in srgb,var(--surface) 40%,transparent);position:relative;animation:float 7s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px)}}
+.verifier::before{content:"";position:absolute;inset:-1px;border-radius:20px;padding:1px;background:linear-gradient(135deg,var(--teal),transparent 40%,transparent 60%,var(--rose));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.vhead{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:.9rem;color:var(--panel-muted);border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:12px}
+.vhead strong{color:var(--panel-ink);font-weight:600;font-size:1rem;display:flex;align-items:center;gap:8px}
+.lights{display:flex;gap:6px}.lights i{width:10px;height:10px;border-radius:50%;display:block}
+.lights i:nth-child(1){background:#FB7185}.lights i:nth-child(2){background:#FBBF24}.lights i:nth-child(3){background:#2DD4BF}
+.scan{height:2px;margin-top:-1px;background:linear-gradient(90deg,transparent,var(--teal),transparent);background-size:40% 100%;background-repeat:no-repeat;animation:scan 1.6s linear infinite}
+.verifier.complete .scan{animation:none;opacity:0}
+@keyframes scan{from{background-position:-40% 0}to{background-position:140% 0}}
+.claims{list-style:none;margin:4px 0 0;padding:0}
+.claim{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:12px 0;border-bottom:1px dashed rgba(255,255,255,.08);opacity:.45;transition:opacity .4s}
+.claim.ok{opacity:1}
+.claim:last-child{border-bottom:0}
+.mark{width:24px;height:24px;border-radius:50%;border:2px solid var(--panel-muted);display:grid;place-items:center;font-size:.8rem;margin-top:2px;transition:background .3s,border-color .3s,transform .3s}
+.claim.ok .mark{background:#14B8A6;border-color:#14B8A6;color:#fff;transform:scale(1.12)}
+.claim .c{font-weight:600;font-size:1rem;line-height:1.3}
+.claim .ev{font-family:var(--text);font-size:.86rem;color:var(--panel-muted);margin-top:3px;line-height:1.45}
+.verdict{margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid rgba(255,255,255,.1);padding-top:14px}
+.verdict .pill{font-weight:800;font-size:.95rem;padding:7px 16px;border-radius:999px;background:rgba(255,255,255,.08);color:var(--panel-muted);transition:background .4s,color .4s}
+.verdict.done .pill{background:linear-gradient(135deg,#14B8A6,#6366F1);color:#fff;animation:pop .5s ease}
+@keyframes pop{50%{transform:scale(1.15)}}
+.verdict small{color:var(--panel-muted);font-size:.85rem}
+
+/* brand wordmark */
+.wordmark{font-family:var(--display);font-weight:800;font-size:clamp(4.6rem,15vw,11rem);line-height:.9;letter-spacing:-0.055em;margin-top:18px;display:flex;align-items:flex-end;gap:.1em}
+.wordmark .wm{padding-bottom:.04em;background:linear-gradient(100deg,var(--ink) 0%,var(--ink) 30%,var(--indigo) 58%,var(--teal) 85%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sheen 8s ease-in-out infinite alternate}
+.seal{flex:none;width:.36em;height:.36em;margin-bottom:.16em;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--indigo));display:grid;place-items:center;box-shadow:0 14px 30px -12px var(--indigo);color:#fff;letter-spacing:0;line-height:1;transform:scale(0) rotate(-90deg);animation:seal .7s cubic-bezier(.3,1.6,.5,1) 3.9s forwards}
+@keyframes seal{to{transform:scale(1) rotate(0)}}
+.fullname{font-family:var(--display);font-weight:600;font-size:clamp(1.05rem,1.8vw,1.3rem);color:var(--muted);margin-top:14px}
+.fullname b{color:var(--ink)}
+.hero h1.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:40px}
+@media (max-width:860px){.pillars{grid-template-columns:1fr}}
+.pillar{border-radius:24px;padding:28px 26px;background:var(--surface);border:1px solid var(--line);position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s}
+.pillar:hover{transform:translateY(-6px);box-shadow:0 30px 50px -30px color-mix(in srgb,var(--pc) 85%,transparent)}
+.pillar .pi{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:1.5rem;color:#fff;background:linear-gradient(135deg,var(--pc),var(--pc2));margin-bottom:18px;box-shadow:0 12px 24px -12px var(--pc)}
+.pillar h3{font-size:1.45rem;margin-bottom:8px}
+.pillar p{margin:0;color:var(--muted)}
+.pillar .proof{margin-top:16px;font-family:var(--display);font-weight:600;font-size:.9rem;color:var(--pc);background:color-mix(in srgb,var(--pc) 12%,transparent);border-radius:12px;padding:8px 12px;display:inline-block}
+.brandline{margin-top:clamp(40px,6vw,64px);text-align:center;font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,4vw,2.8rem);letter-spacing:-0.02em;line-height:1.15}
+.brandline span{background:linear-gradient(90deg,var(--teal),var(--indigo),var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* stats strip */
+.hero .wrap.stats-wrap{display:block}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:clamp(36px,5vw,56px)}
+@media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{border-radius:18px;padding:20px 20px 18px;background:var(--surface);border:1px solid var(--line);position:relative;overflow:hidden}
+.stat::after{content:"";position:absolute;right:-30px;top:-30px;width:90px;height:90px;border-radius:50%;opacity:.18;background:var(--c)}
+.stat b{display:block;font-family:var(--display);font-size:clamp(1.8rem,3.6vw,2.5rem);font-weight:800;color:var(--c);line-height:1}
+.stat span{font-family:var(--display);color:var(--muted);font-size:.93rem;display:block;margin-top:8px}
+
+/* skills marquee */
+.marquee{border-block:1px solid var(--line);background:var(--surface);overflow:hidden;padding:16px 0;margin-top:clamp(40px,6vw,64px)}
+.track{display:flex;gap:14px;width:max-content;animation:scroll 38s linear infinite}
+.marquee:hover .track{animation-play-state:paused}
+@keyframes scroll{to{transform:translateX(-50%)}}
+.chip{font-family:var(--display);font-weight:600;font-size:.98rem;padding:8px 16px;border-radius:999px;white-space:nowrap;background:var(--cs);color:var(--cc)}
+
+/* sections */
+section.block{padding:clamp(64px,9vw,110px) 0;position:relative}
+section.tint-teal{background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--teal-soft) 55%,transparent) 30%,transparent)}
+section.tint-indigo{background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--indigo-soft) 60%,transparent) 30%,transparent)}
+section.tint-amber{background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--amber-soft) 60%,transparent) 30%,transparent)}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:clamp(20px,4vw,56px);align-items:start}
+@media (max-width:840px){.sec-head{grid-template-columns:1fr}}
+.sec-head h2{font-size:clamp(2.1rem,4.4vw,3.2rem);font-weight:800;letter-spacing:-0.025em}
+.sec-head h2::after{content:"";display:block;width:64px;height:6px;border-radius:6px;margin-top:16px;background:linear-gradient(90deg,var(--h1c,var(--teal)),var(--h2c,var(--indigo)))}
+.sec-head .intro{color:var(--muted);max-width:60ch;margin:0;font-size:1.1rem}
+.prose p{max-width:64ch;margin:0 0 1em}
+.facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;padding:0;list-style:none}
+.facts li{font-family:var(--display);font-weight:600;font-size:.92rem;border-radius:999px;padding:7px 15px;background:var(--fs);color:var(--fc)}
+
+/* timeline */
+.timeline{list-style:none;margin:40px 0 0;padding:0;position:relative}
+.timeline::before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:3px;border-radius:3px;background:var(--line)}
+.timeline::after{content:"";position:absolute;left:9px;top:6px;width:3px;border-radius:3px;height:calc(var(--p,0) * (100% - 12px));background:linear-gradient(180deg,var(--teal),var(--indigo),var(--rose));transition:height .2s linear}
+.tl{position:relative;padding:0 0 30px 46px}
+.tl::before{content:"";position:absolute;left:0;top:18px;width:21px;height:21px;border-radius:50%;background:var(--surface);border:4px solid var(--dc);z-index:1}
+.tl .card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px 24px;max-width:760px;transition:transform .25s,box-shadow .25s}
+.tl .card:hover{transform:translateX(6px);box-shadow:0 18px 36px -24px color-mix(in srgb,var(--dc) 80%,transparent)}
+.tl .when{font-family:var(--display);font-weight:600;font-size:.88rem;color:var(--dc);background:color-mix(in srgb,var(--dc) 14%,transparent);display:inline-block;padding:3px 12px;border-radius:999px}
+.tl h3{font-size:1.4rem;margin:10px 0 4px}
+.tl .where{color:var(--muted);font-size:.98rem;margin:0 0 10px}
+.tl ul{margin:0;padding-left:1.1em}
+.tl li{margin:0 0 6px}
+.tl li::marker{color:var(--dc)}
+
+/* projects */
+.featured{margin-top:44px;border-radius:26px;padding:2px;background:linear-gradient(135deg,var(--teal),var(--indigo),var(--rose));box-shadow:0 40px 80px -50px color-mix(in srgb,var(--indigo) 80%,transparent)}
+.featured-in{background:var(--surface);border-radius:24px;padding:clamp(22px,4vw,44px);display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(24px,4vw,48px)}
+@media (max-width:920px){.featured-in{grid-template-columns:1fr}}
+.tag{display:inline-block;font-family:var(--display);font-size:.85rem;font-weight:600;color:var(--teal);background:var(--teal-soft);padding:5px 12px;border-radius:999px}
+.tag.amber{color:var(--amber);background:var(--amber-soft)}
+.featured h3{font-size:clamp(1.9rem,3.4vw,2.6rem);margin:14px 0 12px;font-weight:800}
+.featured p{margin:0 0 14px;max-width:60ch}
+.stack{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0;padding:0;list-style:none}
+.stack li{font-family:var(--display);font-weight:600;font-size:.84rem;color:var(--indigo);background:var(--indigo-soft);border-radius:8px;padding:4px 10px}
+.router{display:grid;gap:12px;align-content:start}
+.router h4{font-family:var(--display);margin:0 0 2px;font-size:1rem;color:var(--muted);font-weight:600}
+.route{border-radius:16px;padding:15px 18px;transition:transform .25s}
+.route:hover{transform:translateX(6px)}
+.route b{font-family:var(--display);font-size:1.08rem;display:flex;align-items:center;gap:8px}
+.route b i{font-style:normal;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:.8rem}
+.route span{font-size:.94rem;color:var(--muted);display:block;margin-top:4px}
+.route.acc{background:var(--teal-soft)}.route.acc b i{background:var(--teal)}
+.route.rej{background:var(--rose-soft)}.route.rej b i{background:var(--rose)}
+.route.uns{background:var(--amber-soft)}.route.uns b i{background:var(--amber)}
+.checks{list-style:none;padding:0;margin:10px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;font-size:.94rem}
+@media (max-width:520px){.checks{grid-template-columns:1fr}}
+.checks li{display:flex;gap:8px;align-items:flex-start}
+.checks li::before{content:"✓";flex:none;width:20px;height:20px;border-radius:6px;background:var(--teal-soft);color:var(--teal);font-weight:700;display:grid;place-items:center;font-size:.75rem;margin-top:3px}
+.pgrid{margin-top:26px;display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+@media (max-width:820px){.pgrid{grid-template-columns:1fr}}
+.pcard{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:26px 26px 22px;overflow:hidden;transition:transform .3s,box-shadow .3s,border-color .3s;display:flex;flex-direction:column}
+.pcard::before{content:"";position:absolute;inset:0 0 auto;height:6px;background:linear-gradient(90deg,var(--pc),var(--pc2))}
+.pcard:hover{transform:translateY(-6px);box-shadow:0 30px 50px -30px color-mix(in srgb,var(--pc) 80%,transparent);border-color:color-mix(in srgb,var(--pc) 50%,var(--line))}
+.pcard .ptop{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+.pcard h3{font-size:1.45rem}
+.pcard .meta{font-family:var(--display);font-size:.88rem;color:var(--muted);margin-top:6px}
+.pcard p{margin:14px 0 0;flex:1}
+.pcard .result{font-family:var(--display);font-weight:800;font-size:1.2rem;color:var(--pc);text-align:right;white-space:nowrap;background:color-mix(in srgb,var(--pc) 12%,transparent);padding:8px 12px;border-radius:14px;line-height:1.1}
+.pcard .result small{display:block;font-weight:600;font-size:.75rem;color:var(--muted);margin-top:3px}
+.pcard a.repo{font-family:var(--display);font-weight:600;font-size:.93rem;margin-top:16px;display:inline-block;color:var(--pc);text-decoration:none}
+.pcard a.repo:hover{text-decoration:underline}
+
+/* writing */
+/* CoreOps */
+.featured.core{margin-top:26px;background:linear-gradient(135deg,var(--amber),var(--rose),var(--indigo));box-shadow:0 40px 80px -50px color-mix(in srgb,var(--rose) 80%,transparent)}
+.core h4{font-family:var(--display);font-size:1.1rem;margin:22px 0 6px}
+.nums{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.num{border-radius:16px;padding:14px 16px;background:color-mix(in srgb,var(--nc) 12%,transparent)}
+.num b{display:block;font-family:var(--display);font-weight:800;font-size:1.45rem;line-height:1.1;color:var(--nc)}
+.num span{font-family:var(--display);font-size:.85rem;color:var(--muted)}
+.phases{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:6px}
+.phase{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:8px 12px;border-radius:12px;background:var(--bg);font-size:.94rem}
+.phase .pn{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:.8rem;border:2px solid var(--line);color:var(--muted)}
+.phase .ps{font-family:var(--display);font-weight:600;font-size:.8rem;color:var(--muted)}
+.phase.done .pn{background:var(--teal);border-color:var(--teal);color:#fff}
+.phase.done .ps{color:var(--teal)}
+.phase.now{background:var(--amber-soft)}
+.phase.now .pn{border-color:var(--amber);color:var(--amber);animation:ping-amber 2s infinite}
+.phase.now .ps{color:var(--amber)}
+@keyframes ping-amber{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--amber) 55%,transparent)}100%{box-shadow:0 0 0 10px transparent}}
+.private{font-family:var(--display);font-size:.9rem;color:var(--muted);margin-top:16px}
+.posts{margin-top:40px;display:grid;gap:16px}
+.post-link{display:grid;grid-template-columns:auto 1fr;gap:22px;padding:24px;border-radius:20px;background:var(--surface);border:1px solid var(--line);text-decoration:none;align-items:center;transition:transform .25s,box-shadow .25s}
+.post-link:hover{transform:translateY(-4px);box-shadow:0 24px 40px -28px color-mix(in srgb,var(--indigo) 80%,transparent);color:inherit}
+@media (max-width:640px){.post-link{grid-template-columns:1fr;gap:10px}}
+.post-art{width:96px;height:96px;border-radius:18px;background:conic-gradient(from 200deg,var(--teal),var(--indigo),var(--rose),var(--amber),var(--teal));display:grid;place-items:center;color:#fff;font-family:var(--display);font-weight:800;font-size:2rem}
+.post-link time{font-family:var(--display);color:var(--indigo);font-weight:600;font-size:.9rem}
+.post-link h3{font-size:1.5rem;margin:4px 0 6px}
+.post-link p{margin:0;color:var(--muted);max-width:62ch}
+.read{font-family:var(--display);font-weight:600;color:var(--teal);margin-top:8px;display:inline-block}
+
+/* off the clock */
+.interests{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}
+@media (max-width:760px){.interests{grid-template-columns:1fr}}
+.interest{border-radius:22px;padding:26px 24px;color:#fff;position:relative;overflow:hidden;min-height:150px;display:flex;flex-direction:column;justify-content:flex-end;transition:transform .3s}
+.interest:hover{transform:translateY(-6px) rotate(-1deg)}
+.interest .ico{position:absolute;right:16px;top:12px;font-size:3.2rem;opacity:.9;transition:transform .5s}
+.interest:hover .ico{transform:scale(1.15) rotate(8deg)}
+.interest b{font-family:var(--display);font-size:1.5rem;font-weight:800}
+.interest span{opacity:.9;font-size:.95rem}
+.i1{background:linear-gradient(135deg,#0EA5E9,#6366F1)}.i2{background:linear-gradient(135deg,#10B981,#0D9488)}.i3{background:linear-gradient(135deg,#F43F5E,#F59E0B)}
+.trips{margin-top:24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+.trip{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;text-decoration:none;display:flex;flex-direction:column;transition:transform .3s,box-shadow .3s}
+.trip:hover{transform:translateY(-6px);box-shadow:0 24px 40px -26px rgba(30,40,90,.6);color:inherit}
+.trip .ph{aspect-ratio:4/3;background:linear-gradient(135deg,var(--sky),var(--indigo));display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:1.6rem;color:#fff;text-align:center;padding:16px;background-size:cover;background-position:center}
+.trip .tb{padding:16px 18px 18px}
+.trip h3{font-size:1.2rem}
+.trip p{margin:6px 0 0;font-size:.95rem;color:var(--muted)}
+.empty{margin-top:24px;border:2px dashed color-mix(in srgb,var(--sky) 45%,var(--line));background:color-mix(in srgb,var(--sky-soft) 50%,transparent);border-radius:20px;padding:clamp(22px,4vw,36px);color:var(--muted)}
+.empty h3{color:var(--ink);font-size:1.3rem;margin-bottom:6px}
+
+/* contact */
+.contact-card{border-radius:30px;padding:clamp(32px,6vw,72px);background:linear-gradient(135deg,#312E81,#0F766E 60%,#9F1239);color:#fff;position:relative;overflow:hidden;isolation:isolate}
+.contact-card::before,.contact-card::after{content:"";position:absolute;border-radius:50%;z-index:-1;filter:blur(40px);opacity:.55}
+.contact-card::before{width:380px;height:380px;background:#F59E0B;right:-80px;top:-120px;animation:drift2 14s ease-in-out infinite alternate}
+.contact-card::after{width:300px;height:300px;background:#22D3EE;left:-60px;bottom:-140px;animation:drift1 16s ease-in-out infinite alternate}
+.contact-card h2{font-size:clamp(2.2rem,5.5vw,4.2rem);font-weight:800;letter-spacing:-0.025em;max-width:16ch}
+.contact-card p{opacity:.9;max-width:54ch;margin-top:16px;font-size:1.1rem}
+.contact-card .btn{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3);color:#fff}
+.contact-card .btn:hover{background:rgba(255,255,255,.22);color:#fff;border-color:#fff}
+.contact-card .btn.primary{background:#fff;color:#1E1B4B;border-color:#fff}
+.contact-card .btn.primary:hover{color:#1E1B4B}
+footer{padding:32px 0 40px;color:var(--muted);font-size:.9rem}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.hero .reveal{transition-delay:var(--d,0s)}
+
+/* article view */
+.article{display:none;padding:clamp(40px,7vw,80px) 0}
+.article .wrap{max-width:780px}
+.article .back{font-family:var(--display);font-weight:600;text-decoration:none;color:var(--indigo);font-size:.95rem;background:var(--indigo-soft);padding:7px 14px;border-radius:999px}
+.article h1{font-size:clamp(2.1rem,5vw,3.4rem);font-weight:800;margin:26px 0 12px;letter-spacing:-0.02em}
+.article .ameta{font-family:var(--display);color:var(--teal);font-weight:600;font-size:.95rem;margin-bottom:22px}
+.article .bar{height:6px;width:80px;border-radius:6px;background:linear-gradient(90deg,var(--teal),var(--indigo),var(--rose));margin-bottom:32px}
+.article .body p{margin:0 0 1.1em;font-size:1.13rem;line-height:1.78}
+.article .body h2{font-size:1.6rem;margin:1.6em 0 .5em}
+.article .body img{border-radius:16px;margin:1.2em 0}
+.article .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:1.2em 0}
+.article .gallery img{margin:0;aspect-ratio:4/3;object-fit:cover;width:100%}
+body.reading main.home{display:none}
+body.reading .article{display:block}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><i aria-hidden="true">✓</i>Rohit</a>
+    <nav class="links" id="nav" aria-label="Main">
+      <a href="#about">About</a>
+      <a href="#values">Values</a>
+      <a href="#work">Work</a>
+      <a href="#projects">Projects</a>
+      <a href="#writing">Writing</a>
+      <a href="#off-the-clock">Off the clock</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="top-actions">
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="nav">Menu</button>
+      <button class="theme-btn" id="themeBtn" aria-label="Switch light or dark mode">◐</button>
+    </div>
+  </div>
+</header>
+
+<main class="home" id="home">
+  <section class="hero" id="top">
+    <div class="blobs" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div></div>
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="wrap">
+      <div>
+        <span class="hello reveal" style="--d:.05s"><span class="dot"></span>Open to AI/ML co-ops, January to August 2027</span>
+        <h1 class="sr">Rohit Rajashekar Aradhya</h1>
+        <div class="wordmark reveal" style="--d:.15s" aria-hidden="true"><span class="wm">Rohit</span><span class="seal"><i style="font-style:normal;font-size:.22em">✓</i></span></div>
+        <p class="fullname reveal" style="--d:.25s"><b>Rohit Rajashekar Aradhya</b>, AI engineer</p>
+        <p class="lede reveal" style="--d:.35s">I build <span class="rotator" id="rotator">LLM agents</span><span class="caret" aria-hidden="true"></span><br>that check their own work.</p>
+        <p class="sub reveal" style="--d:.45s">MS in Artificial Intelligence at Northeastern University in Boston. Before that, 15 months keeping production systems running at Accenture.</p>
+        <div class="cta reveal" style="--d:.6s">
+          <a class="btn primary" href="#projects">See my projects</a>
+          <a class="btn" href="mailto:aradhya.ro@northeastern.edu">Email me</a>
+        </div>
+      </div>
+      <aside class="verifier reveal" style="--d:.35s" id="verifier" aria-label="A verifier checking claims about me against evidence">
+        <div class="vhead"><strong><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>Verifying: Rohit</strong><span id="vcount">0 of 4 checks</span></div>
+        <div class="scan" aria-hidden="true"></div>
+        <ul class="claims" id="claims"></ul>
+        <div class="verdict" id="verdict"><small>Every claim needs evidence.</small><span class="pill" id="pill">Checking</span></div>
+      </aside>
+    </div>
+    <div class="wrap stats-wrap">
+      <div class="stats">
+        <div class="stat reveal" style="--c:var(--teal)"><b data-count="15">0</b><span>months in production at Accenture</span></div>
+        <div class="stat reveal" style="--c:var(--indigo)"><b data-count="700" data-suffix="+">0</b><span>tests behind the OpsPilot verifier</span></div>
+        <div class="stat reveal" style="--c:var(--rose)"><b data-count="100" data-suffix="K">0</b><span>messy NYC 311 records modelled</span></div>
+        <div class="stat reveal" style="--c:var(--amber)"><b data-count="0.922" data-dec="3">0</b><span>ROC-AUC on 72-hour closure</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee" aria-label="Tools I use"><div class="track" id="track"></div></div>
+
+  <section class="block tint-teal" id="about">
+    <div class="wrap sec-head">
+      <h2 class="reveal">About me</h2>
+      <div class="prose reveal">
+        <p>I’m from Bengaluru and now live in Boston, where I’m doing an MS in Artificial Intelligence at Northeastern with a concentration in computer vision. I graduate in December 2027.</p>
+        <p>My interest in AI started with my final-year undergraduate project, Raitha Saathi, a crop price forecasting system we built with ICAR-IIHR in Bengaluru. It was selected for the Karnataka Government’s NAIN initiative, and it’s what got me into AI and ML.</p>
+        <p>After graduating I joined Accenture, where I kept production automation on Microsoft Azure running for 15 months. I handled incidents and call-outs, traced failures to their root cause and learned that a system only matters if people can rely on it. That idea runs through everything I build now. Most of my current work is about LLM agents and agentic AI, and about giving them a way to check themselves before anyone acts on what they say.</p>
+        <ul class="facts">
+          <li style="--fs:var(--teal-soft);--fc:var(--teal)">Northeastern University, MS in AI</li>
+          <li style="--fs:var(--indigo-soft);--fc:var(--indigo)">GPA 3.75</li>
+          <li style="--fs:var(--amber-soft);--fc:var(--amber)">Co-op ready, January to August 2027</li>
+          <li style="--fs:var(--rose-soft);--fc:var(--rose)">Azure AI-900 and AZ-900 certified</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="values">
+    <div class="wrap">
+      <div class="sec-head" style="--h1c:var(--teal);--h2c:var(--rose)">
+        <h2 class="reveal">What Rohit stands for</h2>
+        <p class="intro reveal">Three things you can expect from anything with my name on it.</p>
+      </div>
+      <div class="pillars">
+        <div class="pillar reveal" style="--pc:var(--teal);--pc2:var(--sky)"><div class="pi" aria-hidden="true">✓</div><h3>Evidence over confidence</h3><p>An answer is only as good as the proof behind it. I build systems that cite their sources and get checked before anyone acts on them.</p><span class="proof">OpsPilot’s six-check verifier</span></div>
+        <div class="pillar reveal" style="--pc:var(--indigo);--pc2:var(--teal)"><div class="pi" aria-hidden="true">⚙</div><h3>Built for production</h3><p>I learned engineering on live systems, where things break at the worst time. I test before I ship and trace problems to their root cause.</p><span class="proof">15 months at Accenture</span></div>
+        <div class="pillar reveal" style="--pc:var(--rose);--pc2:var(--amber)"><div class="pi" aria-hidden="true">?</div><h3>Honest about limits</h3><p>I’d rather say “not sure” than guess. When a result isn’t in yet, or a model fails, I say so and show where.</p><span class="proof">Abstention in VisionPilot</span></div>
+      </div>
+      <p class="brandline reveal">Rohit. <span>AI you can check.</span></p>
+    </div>
+  </section>
+
+  <section class="block" id="work">
+    <div class="wrap">
+      <div class="sec-head" style="--h1c:var(--indigo);--h2c:var(--rose)">
+        <h2 class="reveal">Work and study</h2>
+        <p class="intro reveal">From an engineering degree in Mysuru to production support at Accenture to an AI master’s in Boston.</p>
+      </div>
+      <ol class="timeline" id="timeline"></ol>
+    </div>
+  </section>
+
+  <section class="block tint-indigo" id="projects">
+    <div class="wrap">
+      <div class="sec-head" style="--h1c:var(--indigo);--h2c:var(--teal)">
+        <h2 class="reveal">Projects</h2>
+        <p class="intro reveal">I care about what the numbers actually mean and where a model breaks. Where something isn’t finished yet, I say so.</p>
+      </div>
+
+      <article class="featured reveal" aria-labelledby="ops-title"><div class="featured-in">
+        <div>
+          <span class="tag amber">Architecture built, evaluation in progress</span>
+          <h3 id="ops-title">OpsPilot</h3>
+          <p>An LLM agent diagnoses the root cause of failures in microservice systems. I own the layer that decides whether to trust that diagnosis.</p>
+          <p>Every diagnosis must cite evidence. My verifier looks each citation up in a DuckDB and Parquet store of metrics, logs, traces and call graphs, then runs six checks against it.</p>
+          <ul class="checks">
+            <li>Cited evidence is real and matches</li>
+            <li>The root cause shows an anomaly</li>
+            <li>Its onset comes before the symptoms</li>
+            <li>The failure path follows real calls</li>
+            <li>The fault’s signature moves the right way</li>
+            <li>At least two signal types agree</li>
+          </ul>
+          <ul class="stack"><li>Python</li><li>LLM agents</li><li>DuckDB</li><li>Parquet</li><li>RCAEval</li><li>gpt-oss:20b</li><li>700+ tests</li></ul>
+          <p style="margin-top:18px"><a class="repo" href="https://github.com/Adhithyan245/OpsPilot" target="_blank" rel="noopener">View the code on GitHub</a></p>
+        </div>
+        <div class="router" aria-label="How the router decides">
+          <h4>What the router decides</h4>
+          <div class="route acc"><b><i>✓</i>Accept</b><span>Every check that applies passes, and at least one applies.</span></div>
+          <div class="route rej"><b><i>↺</i>Reject and retry</b><span>Any check fails. The agent gets feedback on what failed and up to two more tries.</span></div>
+          <div class="route uns"><b><i>?</i>Unsure</b><span>Evidence is missing. Final, because retrying can’t create missing data.</span></div>
+          <p style="font-size:.93rem;color:var(--muted);margin:6px 0 0">Every verdict goes into an audit log that replays exactly, and raw log text can never be the only proof.</p>
+        </div>
+      </div></article>
+
+      <article class="featured core reveal" aria-labelledby="core-title"><div class="featured-in">
+        <div>
+          <span class="tag">Phases 0 to 2 done</span>
+          <h3 id="core-title">CoreOps</h3>
+          <p>An end-to-end AI operations platform for an e-commerce company: a tested data warehouse, a secure role-based API, dashboards, a chatbot and AI agents with a verifier that checks every answer against the data.</p>
+          <p>It models one mid-size e-commerce company using the real Olist dataset, about 100,000 orders from 2016 to 2018, and covers the work a company actually runs on: sales reporting, delivery performance, customer satisfaction, support triage, forecasting and management reporting.</p>
+          <h4>The most interesting problem so far</h4>
+          <p>The end of the dataset looks like a sales collapse: 6,512 orders in August 2018, then 16 in September. It isn’t falling demand. Reviews stop on 31 August and the slowest deliveries vanish in the final weeks, so orders that hadn’t finished yet simply weren’t exported.</p>
+          <p>I flag those rows instead of deleting them, and only count delivery and review outcomes for orders at least 49 days old, the point by which 99% would have arrived. Without that cut-off the late-delivery rate reads 6.85% instead of 7.07%, so the business would look better than it is.</p>
+          <h4>An API that can’t leak or lie</h4>
+          <p>Phase 2 added a secure API with four least-privilege roles, from execs who see only aggregates to support staff who see orders but not revenue. It runs as a restricted database role, and every request goes into an append-only audit log the app itself can’t tamper with. The log fails closed: if it can’t be written, no data leaves the API.</p>
+          <p>Its 313 automated tests include one built from the app’s own route table, so any new endpoint without a permission check fails CI. Through the API, the Phase 1 figures reproduce exactly: core GMV of BRL 13,312,577.43 and a 7.07% late rate.</p>
+          <h4>How it’s built</h4>
+          <p>With Claude Code, under a phase-gated review process I designed. I approve a written plan before any code is written, then verify each phase myself, with clean-clone runs, my own database queries and CI checks, before anything is merged.</p>
+          <ul class="stack"><li>PostgreSQL</li><li>dbt</li><li>FastAPI</li><li>pgvector</li><li>LangGraph</li><li>Anthropic API</li><li>Next.js</li><li>Power BI</li><li>Azure</li><li>GitHub Actions</li></ul>
+          <p class="private">The code is private for now. The link will go here once it’s public.</p>
+        </div>
+        <div>
+          <div class="nums">
+            <div class="num" style="--nc:var(--teal)"><b>1,550,922</b><span>raw rows loaded, 0 rejected</span></div>
+            <div class="num" style="--nc:var(--indigo)"><b>151 / 151</b><span>dbt data and unit tests passing</span></div>
+            <div class="num" style="--nc:var(--rose)"><b>313</b><span>automated API tests</span></div>
+            <div class="num" style="--nc:var(--amber)"><b>4</b><span>least-privilege database roles</span></div>
+          </div>
+          <ul class="phases" aria-label="Build progress">
+            <li class="phase done"><span class="pn">0</span>Scaffold and CI<span class="ps">Done</span></li>
+            <li class="phase done"><span class="pn">1</span>Data platform<span class="ps">Done</span></li>
+            <li class="phase done"><span class="pn">2</span>Secure API and role-based access<span class="ps">Done</span></li>
+            <li class="phase now"><span class="pn">3</span>Dashboards<span class="ps">Up next</span></li>
+            <li class="phase"><span class="pn">4</span>Chatbot with text-to-SQL and RAG<span class="ps">Planned</span></li>
+            <li class="phase"><span class="pn">5</span>Agents and a verifier<span class="ps">Planned</span></li>
+            <li class="phase"><span class="pn">6</span>Power BI report<span class="ps">Planned</span></li>
+            <li class="phase"><span class="pn">7</span>Azure deployment<span class="ps">Planned</span></li>
+            <li class="phase"><span class="pn">8</span>FilingsIQ: SEC filings intelligence<span class="ps">Planned</span></li>
+          </ul>
+        </div>
+      </div></article>
+
+      <div class="pgrid" id="plist"></div>
+    </div>
+  </section>
+
+  <section class="block" id="writing">
+    <div class="wrap">
+      <div class="sec-head" style="--h1c:var(--rose);--h2c:var(--amber)">
+        <h2 class="reveal">Writing</h2>
+        <p class="intro reveal">Notes on what I’m building and what I’m learning along the way.</p>
+      </div>
+      <div class="posts" id="posts"></div>
+    </div>
+  </section>
+
+  <section class="block tint-amber" id="off-the-clock">
+    <div class="wrap">
+      <div class="sec-head" style="--h1c:var(--sky);--h2c:var(--rose)">
+        <h2 class="reveal">Off the clock</h2>
+        <p class="intro reveal">Travel photos and trip notes, plus the things I do when I’m not at a keyboard.</p>
+      </div>
+      <div class="interests">
+        <div class="interest i1 reveal"><span class="ico" aria-hidden="true">✈️</span><b>Travel</b><span>Photos and write-ups below</span></div>
+        <div class="interest i2 reveal"><span class="ico" aria-hidden="true">🏏</span><b>Cricket</b></div>
+        <div class="interest i3 reveal"><span class="ico" aria-hidden="true">🏍️</span><b>Motorcycles</b></div>
+      </div>
+      <div id="trips"></div>
+    </div>
+  </section>
+
+  <section class="block" id="contact">
+    <div class="wrap">
+      <div class="contact-card reveal">
+        <h2>Let’s build something people can rely on.</h2>
+        <p>I’m looking for an AI/ML co-op from January to August 2027, in the US or Europe. The quickest way to reach me is email.</p>
+        <div class="cta">
+          <a class="btn primary" href="mailto:aradhya.ro@northeastern.edu">aradhya.ro@northeastern.edu</a>
+          <a class="btn" href="https://www.linkedin.com/in/rohit-rajashekar-aradhya" target="_blank" rel="noopener">LinkedIn</a>
+          <a class="btn" href="https://github.com/RohitAradhya247" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section class="article" id="article" aria-live="polite">
+  <div class="wrap">
+    <a class="back" href="#writing" id="backLink">Back</a>
+    <h1 id="aTitle"></h1>
+    <div class="ameta" id="aMeta"></div>
+    <div class="bar" aria-hidden="true"></div>
+    <div class="body" id="aBody"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="yr"></span> Rohit Rajashekar Aradhya. AI you can check.</span>
+    <span>Boston, MA and Bengaluru, India</span>
+  </div>
+</footer>
+
+<script>
+/* =========================================================
+   YOUR CONTENT LIVES HERE. Edit these lists to update the site.
+   ========================================================= */
+
+/* Claims the hero verifier checks. Keep them true. */
+const CLAIMS = [
+  { c: "Ships to production", ev: "15 months at Accenture keeping Azure Logic Apps and Function Apps running" },
+  { c: "Builds LLM agents people can trust", ev: "OpsPilot: a six-check verifier and retry router, 700+ passing tests" },
+  { c: "Trains vision models", ev: "Road damage detection: mAP@50 from 0.326 to 0.529 with YOLOv8" },
+  { c: "Knows when to say “not sure”", ev: "VisionPilot: uncertainty-aware abstention instead of guessing" }
+];
+
+/* Work and study, newest first. */
+const TIMELINE = [
+  { when: "2025 to December 2027", title: "MS in Artificial Intelligence", where: "Northeastern University, Boston", now: true,
+    points: ["Computer vision concentration, GPA 3.75", "Coursework in machine learning, computer vision, foundations of AI and robotics sensing and navigation", "Chose Northeastern for its co-op programme"] },
+  { when: "February 2024 to May 2025", title: "Associate Software Engineer", where: "Accenture, Bengaluru",
+    points: ["Kept live production automation on Azure Logic Apps and Function Apps running for the Modern Ops team", "Handled ServiceNow incidents and production call-outs, tracing issues to their root cause and restoring service", "Tested changes in non-production before deploying them to production", "Tracked cloud costs per environment and proposed moving non-production to pay-as-you-go"] },
+  { when: "Graduated June 2023", title: "Bachelor of Engineering, Computer Science and Engineering", where: "Vidya Vikas Institute of Engineering and Technology, Mysuru",
+    points: ["Final-year project Raitha Saathi, built with ICAR-IIHR Bengaluru, was selected for the Karnataka Government NAIN initiative"] }
+];
+
+/* Other projects. "result" is the one number worth showing. */
+const PROJECTS = [
+  { name: "VisionPilot", meta: "Fall 2026 to present, in progress", result: "", resultNote: "",
+    text: "A system that compares a team of specialist vision models, coordinated by agents, against a single vision-language model. It uses uncertainty-aware abstention, so it declines to answer when it isn’t sure instead of guessing. I’m preparing it for a conference submission.", repo: "" },
+  { name: "Road Damage Detection", meta: "Spring 2026, computer vision, with Sonika Kizhakepurath Vinod", result: "0.326 to 0.529", resultNote: "mAP@50",
+    text: "A YOLOv8 detector for potholes and three kinds of cracks in ordinary street photos. We merged 3,027 images from RDD2022 and a Kaggle pothole set, then field-tested on our own Boston photos and traced the misses, like cracks under crosswalk paint, to gaps in the training data.", repo: "https://github.com/RohitAradhya247/Road_Damage_Detection_Proj" },
+  { name: "NYC 311 Resolution Prediction", meta: "Spring 2026, machine learning, with Sonika Kizhakepurath Vinod", result: "0.922", resultNote: "ROC-AUC",
+    text: "Predicting whether a city service request closes within 72 hours, across 100,000 messy records and five classifiers. The most useful finding wasn’t the score: resolution rates drop from about 80% to 67% during business hours, and the assigned agency drives delays more than anything else.", repo: "https://github.com/Sonikakv/NYC311_Project" },
+  { name: "Autonomous Shopping Cart Return", meta: "Fall 2025, robotics, team project", result: "< 0.25 m", resultNote: "mean position error",
+    text: "A cart that drives itself back to the corral, simulated in ROS 2 and Gazebo. I set up the simulation and sensor plugins and co-built the GPS-IMU Extended Kalman Filter, which held position error far below the 1 to 3 m of raw GPS noise.", repo: "" },
+  { name: "Raitha Saathi", meta: "2022 to 2023, undergraduate final-year project", result: "", resultNote: "",
+    text: "A crop price forecasting system for farmers, built with the Indian Institute of Horticultural Research and selected for the Karnataka Government NAIN initiative. I led data cleaning and model training.", repo: "" }
+];
+
+/* BLOG POSTS. To add one, copy a block, give it a new slug (letters, numbers, hyphens),
+   and write paragraphs as strings. Start a string with "## " for a subheading,
+   or use { img: "photo.jpg", alt: "what it shows" } for an image. Newest first. */
+const POSTS = [
+  { slug: "teaching-an-agent-to-say-not-sure", title: "Teaching an AI agent to say “I’m not sure”", date: "2026-11-12",
+    summary: "What I learned building the layer that decides whether to believe an LLM’s diagnosis.",
+    body: [
+      "At Accenture I spent a lot of time on production call-outs. Something breaks, and someone has to work out which service caused it, usually fast. So when our team started OpsPilot, an LLM agent that diagnoses the root cause of microservice failures, I already knew the hard part wouldn’t be getting an answer. It would be knowing whether to believe it.",
+      "## Confident isn’t the same as correct",
+      "LLMs are very good at sounding sure. A diagnosis can name a service, describe a failure path and read perfectly, while resting on nothing. My job on the project is the verifier and router: the part that checks the agent’s work before anyone acts on it.",
+      "The rule I started from is simple. Every diagnosis has to cite evidence, and every citation has to point at real data. The verifier looks each one up in a store of metrics, logs, traces and the service call graph, and then runs six checks. Is the evidence real and does it match? Does the claimed root cause actually show an anomaly? Did it start before the symptoms did? Does the failure path follow real calls between services? Does the fault’s signature move the way it should? And do at least two kinds of signal agree?",
+      "## Three answers, not two",
+      "The router turns those checks into one of three verdicts. If something fails, the diagnosis goes back to the agent with feedback, for up to two more tries. If every check that applies passes, it’s accepted. And if the evidence simply isn’t there, the answer is “unsure”, and it stays that way. Retrying can’t create data that doesn’t exist, and pretending otherwise is how systems end up confidently wrong.",
+      "One small rule turned out to matter a lot: at least one check has to apply before anything can be accepted. Without it, a diagnosis that no check could test would pass by default, which is exactly the silent failure a verifier exists to stop.",
+      "## Where it stands",
+      "The architecture is built and tested, with an audit log that replays every verdict exactly. What I don’t have yet are accuracy numbers, because the evaluation on real agent runs is still ahead of us. I’d rather say that plainly than show a figure I can’t defend. I’ll write a follow-up once the results are in."
+    ] }
+];
+
+/* TRIPS. Add one per trip. Photos: put image files next to this page (for example in an
+   "images" folder) and list them. The first photo becomes the cover. Newest first. */
+const TRIPS = [
+  /* Example:
+  { slug: "trip-example", place: "Place name", when: "Month 2026", summary: "One line about the trip.",
+    photos: ["images/trip-1.jpg", "images/trip-2.jpg"],
+    body: ["A paragraph about the trip.", "## A subheading", "Another paragraph."] },
+  */
+];
+
+/* ========================================================= */
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m]));
+const fmtDate = (d) => new Date(d + "T12:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+$("#yr").textContent = new Date().getFullYear();
+
+/* theme */
+try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+$("#themeBtn").addEventListener("click", () => {
+  const cur = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const next = cur === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem("theme", next); } catch (e) {}
+});
+
+/* mobile menu */
+const nav = $("#nav"), menuBtn = $("#menuBtn");
+menuBtn.addEventListener("click", () => { const o = nav.classList.toggle("open"); menuBtn.setAttribute("aria-expanded", o); });
+nav.addEventListener("click", (e) => { if (e.target.tagName === "A") { nav.classList.remove("open"); menuBtn.setAttribute("aria-expanded", false); } });
+
+/* skills marquee */
+const SKILLS = [["Python","teal"],["PyTorch","rose"],["TensorFlow","amber"],["LLM agents","indigo"],["Prompt engineering","sky"],["DuckDB","teal"],["SQL","indigo"],["YOLOv8","rose"],["OpenCV","amber"],["scikit-learn","sky"],["ROS 2","teal"],["Microsoft Azure","indigo"],["Claude Code","rose"],["Pandas","amber"],["Git","sky"]];
+const chips = SKILLS.map(([s,c]) => `<span class="chip" style="--cs:var(--${c}-soft);--cc:var(--${c})">${esc(s)}</span>`).join("");
+$("#track").innerHTML = chips + chips.replace(/class="chip"/g, 'class="chip" aria-hidden="true"');
+
+/* typing rotator */
+const WORDS = ["LLM agents", "verifiers", "vision models", "AI systems"];
+(function rot() {
+  const el = $("#rotator"); if (reduce) return;
+  let w = 0, i = WORDS[0].length, del = true;
+  setTimeout(function tick() {
+    const word = WORDS[w];
+    if (del) { i--; if (i === 0) { del = false; w = (w + 1) % WORDS.length; } }
+    else { i++; if (i === WORDS[w].length) { del = true; el.textContent = WORDS[w]; return setTimeout(tick, 2200); } }
+    el.textContent = (del ? word : WORDS[w]).slice(0, i) || "\u00a0";
+    setTimeout(tick, del ? 45 : 85);
+  }, 2600);
+})();
+
+/* hero verifier */
+const claimsEl = $("#claims");
+claimsEl.innerHTML = CLAIMS.map((c) => `<li class="claim"><span class="mark" aria-hidden="true"></span><div><div class="c">${esc(c.c)}</div><div class="ev">${esc(c.ev)}</div></div></li>`).join("");
+const items = [...claimsEl.children];
+function pass(i) {
+  items[i].classList.add("ok"); items[i].querySelector(".mark").textContent = "✓";
+  $("#vcount").textContent = `${i + 1} of ${items.length} checks`;
+  if (i === items.length - 1) { $("#verdict").classList.add("done"); $("#pill").textContent = "Accepted"; $("#verdict small").textContent = "All checks passed."; $("#verifier").classList.add("complete"); }
+}
+items.forEach((_, i) => reduce ? pass(i) : setTimeout(() => pass(i), 1100 + i * 650));
+
+/* timeline */
+const DOTS = ["var(--teal)", "var(--indigo)", "var(--rose)", "var(--amber)"];
+$("#timeline").innerHTML = TIMELINE.map((t, k) => `<li class="tl reveal" style="--dc:${DOTS[k % 4]}"><div class="card"><span class="when">${esc(t.when)}</span><h3>${esc(t.title)}</h3><p class="where">${esc(t.where)}</p><ul>${t.points.map((p) => `<li>${esc(p)}</li>`).join("")}</ul></div></li>`).join("");
+
+/* projects */
+const PCOL = [["var(--indigo)","var(--sky)"],["var(--rose)","var(--amber)"],["var(--teal)","var(--sky)"],["var(--amber)","var(--rose)"],["var(--sky)","var(--teal)"]];
+$("#plist").innerHTML = PROJECTS.map((p, k) => `<div class="pcard reveal" style="--pc:${PCOL[k % 5][0]};--pc2:${PCOL[k % 5][1]}"><div class="ptop"><div><h3>${esc(p.name)}</h3><div class="meta">${esc(p.meta)}</div></div>${p.result ? `<div class="result">${esc(p.result)}<small>${esc(p.resultNote)}</small></div>` : ""}</div><p>${esc(p.text)}</p>${p.repo ? `<a class="repo" href="${esc(p.repo)}" target="_blank" rel="noopener">View the code on GitHub</a>` : ""}</div>`).join("");
+
+/* writing */
+$("#posts").innerHTML = POSTS.length
+  ? POSTS.map((p) => `<a class="post-link reveal" href="#post-${p.slug}"><div class="post-art" aria-hidden="true">${esc(p.title.replace(/[^A-Za-z]/g, "").charAt(0))}</div><div><time datetime="${p.date}">${fmtDate(p.date)}</time><h3>${esc(p.title)}</h3><p>${esc(p.summary)}</p><span class="read">Read the post</span></div></a>`).join("")
+  : `<div class="empty"><h3>No posts yet</h3><p>The first one is on its way.</p></div>`;
+
+/* trips */
+$("#trips").innerHTML = TRIPS.length
+  ? `<div class="trips">${TRIPS.map((t) => `<a class="trip reveal" href="#trip-${t.slug}"><div class="ph" style="${t.photos && t.photos[0] ? `background-image:url('${esc(t.photos[0])}')` : ""}">${t.photos && t.photos[0] ? "" : esc(t.place)}</div><div class="tb"><h3>${esc(t.place)}</h3><p>${esc(t.when)}. ${esc(t.summary)}</p></div></a>`).join("")}</div>`
+  : `<div class="empty reveal"><h3>Trip notes coming soon</h3><p>Photos and write-ups from my travels will live here.</p></div>`;
+
+/* reveal on scroll */
+const io = "IntersectionObserver" in window && !reduce ? new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .12, rootMargin: "0px 0px -40px 0px" }) : null;
+document.querySelectorAll(".reveal").forEach((el, k) => { if (io) { if (!el.style.getPropertyValue("--d")) el.style.transitionDelay = (k % 3) * 0.08 + "s"; io.observe(el); } else el.classList.add("in"); });
+
+/* count-up stats */
+function countUp(el) {
+  const end = parseFloat(el.dataset.count), dec = +(el.dataset.dec || 0), suf = el.dataset.suffix || "", sep = el.dataset.sep;
+  const show = (v) => (sep ? Math.round(v).toLocaleString("en-GB") : v.toFixed(dec)) + suf;
+  if (reduce) { el.textContent = show(end); return; }
+  const t0 = performance.now(), dur = 1600;
+  (function step(t) { const p = Math.min((t - t0) / dur, 1), e = 1 - Math.pow(1 - p, 3); el.textContent = show(end * e); if (p < 1) requestAnimationFrame(step); })(t0);
+}
+const so = "IntersectionObserver" in window ? new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { countUp(e.target); so.unobserve(e.target); } }), { threshold: .6 }) : null;
+document.querySelectorAll("[data-count]").forEach((el) => so ? so.observe(el) : countUp(el));
+
+/* scroll progress, timeline fill, active nav */
+const prog = $("#progress"), tlEl = $("#timeline"), links = [...nav.querySelectorAll("a")];
+function onScroll() {
+  const h = document.documentElement, max = h.scrollHeight - h.clientHeight;
+  prog.style.transform = `scaleX(${max > 0 ? h.scrollTop / max : 0})`;
+  const r = tlEl.getBoundingClientRect(), vh = innerHeight;
+  tlEl.style.setProperty("--p", Math.max(0, Math.min(1, (vh * 0.75 - r.top) / r.height)));
+  let cur = "";
+  links.forEach((a) => { const s = document.getElementById(a.getAttribute("href").slice(1)); if (s && s.getBoundingClientRect().top < vh * 0.4) cur = a.getAttribute("href"); });
+  links.forEach((a) => a.classList.toggle("active", a.getAttribute("href") === cur));
+}
+addEventListener("scroll", onScroll, { passive: true }); onScroll();
+
+/* article rendering */
+function renderBody(parts) {
+  return parts.map((b) => {
+    if (typeof b === "object" && b.img) return `<img src="${esc(b.img)}" alt="${esc(b.alt || "")}" loading="lazy">`;
+    if (String(b).startsWith("## ")) return `<h2>${esc(b.slice(3))}</h2>`;
+    return `<p>${esc(b)}</p>`;
+  }).join("");
+}
+function route() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  let item = null, kind = "";
+  if (h.startsWith("post-")) { item = POSTS.find((p) => p.slug === h.slice(5)); kind = "post"; }
+  if (h.startsWith("trip-")) { item = TRIPS.find((t) => t.slug === h.slice(5)); kind = "trip"; }
+  if (item) {
+    document.body.classList.add("reading");
+    $("#aTitle").textContent = kind === "post" ? item.title : item.place;
+    $("#aMeta").textContent = kind === "post" ? fmtDate(item.date) : item.when;
+    $("#backLink").href = kind === "post" ? "#writing" : "#off-the-clock";
+    $("#backLink").textContent = kind === "post" ? "Back to writing" : "Back to travel";
+    const gallery = kind === "trip" && item.photos && item.photos.length ? `<div class="gallery">${item.photos.map((p) => `<img src="${esc(p)}" alt="${esc(item.place)}" loading="lazy">`).join("")}</div>` : "";
+    $("#aBody").innerHTML = renderBody(item.body || []) + gallery;
+    document.title = `${$("#aTitle").textContent} | Rohit`;
+    window.scrollTo(0, 0);
+  } else {
+    const wasReading = document.body.classList.contains("reading");
+    document.body.classList.remove("reading");
+    document.title = "Rohit | AI you can check";
+    if (wasReading && h) { const el = document.getElementById(h); if (el) el.scrollIntoView(); }
+  }
+  onScroll();
+}
+addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
